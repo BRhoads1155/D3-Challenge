@@ -4,7 +4,7 @@
 
 ### Core Assignment: D3 Dabbler (Required Assignment)
 
-* Created scatter plot of relationship between Poverty %% and Lacks Healthcare % of United States using the data.csv file.
+* Created scatter plot of relationship between Poverty % and Lacks Healthcare % of United States using the data.csv file.
 
 * Tooltip in top right changes when the user hovers over a circle.
 
