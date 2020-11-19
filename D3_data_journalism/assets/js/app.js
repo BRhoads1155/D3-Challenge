@@ -47,7 +47,7 @@ function renderCircles(circlesGroup, newXScale, chosenXAxis) {
 
     circlesGroup.transition()
     .duration(1000)
-    .attr("cx", d => newXScale(d[chosenXAxis]));
+    .attr("cx", d => newXScale(d[chosenXAxis]))
 
   return circlesGroup;
 }
@@ -56,8 +56,7 @@ function renderText(circleText, newXScale, chosenXAxis) {
 
   circleText.transition()
     .duration(1000)
-    .attr("x", d => newXScale(d[chosenXAxis]))
-    .attr("y", d => yLinearScale(d.healthcare))
+    .attr("x", d => newXScale(d[chosenXAxis]));
 
   return circleText;
 }
@@ -77,18 +76,14 @@ function updateToolTip(chosenXAxis, circlesGroup) {
     .attr("class", "d3-tip")
     .offset([-8, -0])
     .html(function(d) {
-      return (`${d.state}<br>Poverty Rate/Household Income: ${d[chosenXAxis]}<br>Lacks healthcare: ${d.healthcare}`);
+      return (`${d.state}<br>${label} ${d[chosenXAxis]}<br>Lacks healthcare: ${d.healthcare}`);
         });
   
   circlesGroup.call(toolTip);
   
   circlesGroup.on("mouseover", function(data) {
     toolTip.show(data);
-  })
-    // onmouseout event
-    .on("mouseout", function(data, index) {
-      toolTip.hide(data);
-    });
+  });
 
   return circlesGroup;
 
@@ -150,7 +145,6 @@ d3.csv("assets/data/data.csv").then(function(stateData) {
       .classed("stateText", true)
       .attr("x", d => xLinearScale(d[chosenXAxis]))
       .attr("y", d => yLinearScale(d.healthcare))
-      .attr("dy", 3)
       .attr("font-size", "10px")
       .text(function(d) { return d.abbr })
 
@@ -210,27 +204,20 @@ d3.csv("assets/data/data.csv").then(function(stateData) {
       circlesGroup = renderCircles(circlesGroup, xLinearScale, chosenXAxis);
 
       // updates tooltips with new info
-      circleText = updateToolTip(chosenXAxis, circleText);
+      circleText = renderText(circleText, xLinearScale, chosenXAxis);
+      
+      circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
 
-      // changes classes to change bold text
+      //change classes to change bold text
       if (chosenXAxis === "poverty") {
-        povertyLabel
-          .classed("active", true)
-          .classed("inactive", false);
-        incomeLabel
-          .classed("active", false)
-          .classed("inactive", true);
-      }
-      else {
-        povertyLabel
-          .classed("active", false)
-          .classed("inactive", true);
-        incomeLabel
-          .classed("active", true)
-          .classed("inactive", false);
-      }
-    }
-  });
+        povertyLabel.classed("active", true).classed("inactive", false);
+        incomeLabel.classed("active", false).classed("inactive", true);
+              } else {
+                  povertyLabel.classed("active", false).classed("inactive", true);
+                  incomeLabel.classed("active", true).classed("inactive", false);
+              }
+          }
+      });
 }).catch(function(error) {
 console.log(error);
 });
